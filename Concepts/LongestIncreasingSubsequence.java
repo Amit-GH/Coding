@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 /**
  * https://en.wikipedia.org/wiki/Longest_increasing_subsequence
+ * 1-indexing used
  */
 public class LongestIncreasingSubsequence {
     int[] A; // to store the input array
