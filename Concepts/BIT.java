@@ -7,6 +7,7 @@ package Concepts;
  * Space complexity is O(n)
  * Source: https://www.geeksforgeeks.org/binary-indexed-tree-or-fenwick-tree-2/
  * Used in https://leetcode.com/problems/range-sum-query-mutable/
+ * Used in https://leetcode.com/problems/count-of-smaller-numbers-after-self/
  */
 public class BIT {
     int[] bit;
@@ -23,27 +24,48 @@ public class BIT {
     }
 
     /**
-     * Updates the value present at the given index
+     * Updates the value present at the given index. This uses a view of the tree where index=size+1 is the root node.
+     * This view is different from the view used during getSum() method.
      */
     public void update(int index, int val) {
         if (index < 0 || index >= size) {
             throw new IllegalStateException("index should be from 0 to " + (size - 1));
         }
-        // update the actual array
+        // update the actual array.
         int from = arr[index];
         arr[index] = val;
 
-        // update the bit array
+        // update the bit array.
         int i = index + 1;
         while (i <= size) {
             bit[i] = bit[i] - from + val;
-            // move up the tree by adding last est bit
+            // move up the tree by adding last set bit.
             i += (i & (-i));
         }
     }
 
+     /**
+      * Adds the value present at the given index. Uses tree view similar to update() method.
+      */
+    public void add(int index, int val) {
+        if (index < 0 || index >= size) {
+            throw new IllegalStateException("index should be from 0 to " + (size - 1));
+        }
+        // update the actual array
+        arr[index] += val;
+
+        // update the bit array
+        int i = index + 1;
+        while (i <= size) {
+            bit[i] = bit[i] + val;
+            // move up the tree by adding last set bit.
+            i += (i & (-i));
+        }
+    }
+    
     /**
-     * Returns sum of numbers from index 0 to the given index
+     * Returns sum of numbers from index 0 to the given index. This uses a view of tree where 0 (dummy) node
+     * is at the root.
      */
     public int getSum(int index) {
         if (index < 0 || index >= size) {
@@ -53,7 +75,7 @@ public class BIT {
         int i = index + 1;
         while (i > 0) {
             sum += bit[i];
-            // move up the tree by removing the last set bit
+            // move up the tree by removing the last set bit.
             i -= (i & (-i));
         }
         return sum;
